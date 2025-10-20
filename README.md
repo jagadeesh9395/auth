@@ -1,6 +1,6 @@
 # Authentication Service
 
-A secure, scalable authentication microservice built with Spring Boot 3, Spring Security, JWT, and MongoDB.
+A secure, scalable authentication service built with Spring Boot 3, Spring Security, JWT, and MongoDB, featuring both REST API and traditional web interfaces.
 
 ## Features
 
@@ -9,9 +9,12 @@ A secure, scalable authentication microservice built with Spring Boot 3, Spring 
 - 🔒 Role-based access control (USER, ADMIN)
 - 🛡️ Password encryption with BCrypt
 - 🗄️ MongoDB for data persistence
-- 📝 Swagger/OpenAPI documentation
-- 🧪 Comprehensive error handling
-- 🚀 Ready for microservice architecture
+- 🌐 Traditional web interface with Thymeleaf
+- 🔄 Session-based authentication for web
+- 📝 Swagger/OpenAPI documentation for REST API
+- 🧪 Comprehensive form validation and error handling
+- 🔒 CSRF protection for web forms
+- 🍪 Remember-me functionality
 
 ## Tech Stack
 
@@ -65,19 +68,58 @@ mvn spring-boot:run
 
 The application will be available at `http://localhost:8080`
 
-## API Endpoints
+# Endpoints
+
+## REST API Endpoints (JWT Authentication)
 
 ### Authentication
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST   | `/api/v1/auth/register` | Register a new user |
-| POST   | `/api/v1/auth/authenticate` | Login and get JWT token |
-| POST   | `/api/v1/auth/refresh-token` | Refresh access token |
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST   | `/api/v1/auth/register` | Register a new user | Public |
+| POST   | `/api/v1/auth/authenticate` | Login and get JWT token | Public |
+| POST   | `/api/v1/auth/refresh-token` | Refresh access token | Requires refresh token |
 
-### Example Requests
+## Web Endpoints (Session-based Authentication)
 
-#### Register a new user
+### Authentication
+
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| GET    | `/` | Redirects to login or welcome page based on auth status | Public |
+| GET    | `/login` | Show login form | Public |
+| POST   | `/login` | Process login | Public |
+| GET    | `/register` | Show registration form | Public |
+| POST   | `/register` | Process registration | Public |
+| GET    | `/welcome` | Welcome page for authenticated users | Authenticated |
+| POST   | `/logout` | Logout current user | Authenticated |
+
+### Static Resources
+
+| Path | Description |
+|------|-------------|
+| `/css/**` | CSS stylesheets |
+| `/js/**` | JavaScript files |
+| `/images/**` | Image assets |
+| `/webjars/**` | WebJar resources |
+
+## Security Configuration
+
+- **CSRF Protection**: Enabled for web forms
+- **CORS**: Configured for REST API
+- **Session Management**:
+  - Session creation policy: IF_REQUIRED
+  - Maximum sessions: 1 per user
+  - Session timeout: 30 minutes
+  - Invalid session URL: `/login?expired`
+- **Remember Me**:
+  - Enabled with 24-hour validity
+  - Secure cookie settings
+  - Uses persistent token approach
+
+## Example API Requests
+
+### Register a new user
 
 ```http
 POST /api/v1/auth/register
@@ -91,13 +133,46 @@ Content-Type: application/json
 }
 ```
 
-#### Login
+### Login
+
+#### REST API (JWT)
 
 ```http
 POST /api/v1/auth/authenticate
 Content-Type: application/json
 
 {
+    "email": "john@example.com",
+    "password": "password123"
+}
+```
+
+#### Web Form (Session)
+
+```http
+POST /login
+Content-Type: application/x-www-form-urlencoded
+
+username=john%40example.com&password=password123&remember-me=on
+```
+
+## Form Validation
+
+### Registration Form
+- First name: Required, 2-50 characters
+- Last name: Required, 2-50 characters
+- Email: Required, valid email format
+- Password: 
+  - Minimum 8 characters
+  - At least one uppercase letter
+  - At least one lowercase letter
+  - At least one number
+  - At least one special character
+
+### Login Form
+- Username/Email: Required
+- Password: Required
+- Remember Me: Optional (24-hour persistent session)
     "email": "john@example.com",
     "password": "password123"
 }
