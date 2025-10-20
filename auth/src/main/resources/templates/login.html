@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Secure Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .login-container {
+            max-width: 400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-header i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .login-header h2 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e1e5ee;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e5ee;
+            border-right: none;
+            border-radius: 8px 0 0 8px !important;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        
+        .forgot-password:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .register-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .register-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+        
+        .alert i {
+            margin-right: 0.5rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 576px) {
+            .login-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .login-header i {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="login-container">
+                    <div class="login-header">
+                        <i class="fas fa-user-shield"></i>
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to access your account</p>
+                    </div>
+                    
+                    <form th:action="@{/login}" method="post" th:object="${loginRequest}">
+                        <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>Invalid username or password.</div>
+                        </div>
+                        
+                        <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="fas fa-check-circle"></i>
+                            <div>You have been logged out successfully.</div>
+                        </div>
+                        
+                        <div th:if="${param.registered}" class="alert alert-success d-flex align-items-center" role="alert">
+                            <i class="fas fa-check-circle"></i>
+                            <div>Registration successful! Please log in with your credentials.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       th:value="${loginRequest != null ? loginRequest.username : ''}" 
+                                       placeholder="Enter your username" required autofocus>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label for="password" class="form-label fw-semibold mb-0">Password</label>
+                                <a href="#" class="forgot-password">Forgot password?</a>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       th:value="${loginRequest != null ? loginRequest.password : ''}" 
+                                       placeholder="Enter your password" required>
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me">
+                                <label class="form-check-label" for="remember-me">
+                                    Remember me
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 btn-login mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                        
+                        <div class="text-center mt-4">
+                            <p class="mb-0">Don't have an account? 
+                                <a th:href="@{/register}" class="register-link">Create an Account</a>
+                            </p>
+                        </div>
+                    </form>
+                    
+                    <div class="footer">
+                        <p class="mb-0">© 2025 Secure Portal. All rights reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordInput = this.previousElementSibling;
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+        });
+    </script>
+</body>
+</html>

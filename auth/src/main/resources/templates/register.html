@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Secure Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #7209b7;
+            --secondary-color: #560bad;
+            --accent-color: #b5179e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f3e5ff 0%, #e0aaff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .register-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 2rem auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            min-height: 90vh;
+        }
+        
+        .register-illustration {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 45%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-illustration::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+        
+        .register-illustration h2 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+        }
+        
+        .register-illustration p {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .illustration {
+            width: 100%;
+            max-width: 300px;
+            margin: 2rem auto 0;
+            display: block;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+        
+        .register-form {
+            padding: 3rem 2.5rem;
+            width: 55%;
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .register-header i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .register-header h2 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .register-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e1e5ee;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(114, 9, 183, 0.25);
+        }
+        
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e5ee;
+            border-right: none;
+            border-radius: 8px 0 0 8px !important;
+            color: #6c757d;
+        }
+        
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            padding: 0.75rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+            color: white;
+        }
+        
+        .login-link {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .login-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .form-check-label a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .form-check-label a:hover {
+            text-decoration: underline;
+        }
+        
+        .invalid-feedback {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+        
+        .toggle-password {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left: none;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #e1e5ee;
+            border-left: none;
+            cursor: pointer;
+        }
+        
+        .toggle-password:hover {
+            background-color: #e9ecef;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            padding: 0.75rem 1rem;
+        }
+        
+        .alert i {
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 991.98px) {
+            .register-container {
+                flex-direction: column;
+                max-width: 500px;
+                margin: 1rem auto;
+                min-height: auto;
+            }
+            
+            .register-illustration, .register-form {
+                width: 100%;
+            }
+            
+            .register-illustration {
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+            
+            .illustration {
+                max-width: 200px;
+                margin: 1rem auto 0;
+            }
+            
+            .register-form {
+                padding: 2rem 1.5rem;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .register-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .register-illustration h2 {
+                font-size: 1.75rem;
+            }
+            
+            .form-control, .form-select, .btn-register {
+                padding: 0.65rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <div class="register-illustration d-none d-lg-flex">
+                <div>
+                    <h2>Join Our Community</h2>
+                    <p>Create your account and start your journey with us. Get access to exclusive features and content.</p>
+                </div>
+                <img src="https://img.icons8.com/color/300/000000/register-account.png" alt="Register Illustration" class="illustration">
+            </div>
+            
+            <div class="register-form">
+                <div class="register-header">
+                    <i class="fas fa-user-plus"></i>
+                    <h2>Create Account</h2>
+                    <p>Fill in the form to get started</p>
+                </div>
+                
+                <form th:action="@{/register}" method="post" th:object="${registerRequest}" class="needs-validation" novalidate>
+                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger d-flex align-items-center" role="alert">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <span th:each="err : ${#fields.errors('*')}" th:text="${err}" class="d-block"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       th:value="${registerRequest != null ? registerRequest.username : ''}" 
+                                       placeholder="johndoe" required minlength="3" maxlength="50">
+                            </div>
+                            <div class="invalid-feedback">
+                                Please choose a username (3-50 characters).
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       th:value="${registerRequest != null ? registerRequest.email : ''}" 
+                                       placeholder="your@email.com" required>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="role" class="form-label">Role</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                                <select class="form-select" id="role" name="role" th:field="*{role}" required>
+                                    <option value="" disabled selected>Select your role</option>
+                                    <option th:each="role : ${T(com.kjr.auth.model.Role).values()}" 
+                                            th:value="${role}" 
+                                            th:text="${'ROLE_' + role}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">
+                                Please select a role.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" 
+                                       th:value="${registerRequest != null ? registerRequest.password : ''}" 
+                                       placeholder="••••••••" required minlength="8">
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Password must be at least 8 characters long.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" 
+                                       th:value="${registerRequest != null ? registerRequest.confirmPassword : ''}" 
+                                       placeholder="••••••••" required minlength="8">
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">
+                                Passwords must match.
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                                </label>
+                                <div class="invalid-feedback">
+                                    You must agree to the terms and conditions.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-register mt-4">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+                    
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? 
+                            <a th:href="@{/login}" class="login-link">Sign In</a>
+                        </p>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted small mb-0">© 2025 Secure Portal. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        (function () {
+            'use strict'
+            
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+            
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+                
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordInput = this.closest('.input-group').querySelector('input');
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+                });
+            });
+            
+            // Password match validation
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            function validatePassword() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity("Passwords don't match");
+                } else {
+                    confirmPassword.setCustomValidity('');
+                }
+            }
+            
+            if (password && confirmPassword) {
+                password.onchange = validatePassword;
+                confirmPassword.onkeyup = validatePassword;
+            }
+        })()
+    </script>
+</body>
+</html>

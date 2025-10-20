@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Secure Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #7209b7;
+            --secondary-color: #560bad;
+            --accent-color: #b5179e;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #28a745;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f3e5ff 0%, #e0aaff 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white !important;
+        }
+        
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white !important;
+            padding: 0.4rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .welcome-container {
+            padding: 3rem 0;
+        }
+        
+        .welcome-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 3rem;
+        }
+        
+        .welcome-hero {
+            padding: 3rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+            z-index: 1;
+        }
+        
+        .welcome-content {
+            padding: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .welcome-illustration {
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list i {
+            color: var(--success-color);
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-action {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-action i {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+            color: white;
+        }
+        
+        .btn-outline-action {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-action:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        footer {
+            background: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        @media (max-width: 991.98px) {
+            .welcome-hero {
+                padding: 2rem 1.5rem;
+                text-align: center;
+            }
+            
+            .welcome-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .welcome-illustration {
+                max-width: 250px;
+                margin: 2rem auto;
+            }
+        }
+        
+        @media (max-width: 575.98px) {
+            .welcome-title {
+                font-size: 1.75rem;
+            }
+            
+            .welcome-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .btn-action {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-shield-alt"></i> Secure Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-logout">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome Section -->
+    <div class="welcome-container">
+        <div class="container">
+            <div class="welcome-card">
+                <div class="row g-0">
+                    <div class="col-lg-6 welcome-hero">
+                        <div class="welcome-content">
+                            <h1 class="welcome-title">Welcome back, <span th:text="${user.username}"></span>! 👋</h1>
+                            <p class="welcome-subtitle">You've successfully logged in to your Secure Portal account. We're glad to see you again!</p>
+                            <div class="d-flex flex-wrap">
+                                <a href="#" class="btn-action">
+                                    <i class="fas fa-rocket me-1"></i> Get Started
+                                </a>
+                                <a href="#" class="btn-action btn-outline-action">
+                                    <i class="fas fa-chart-line me-1"></i> View Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
+                        <img src="https://img.icons8.com/color/300/000000/verified-account.png" alt="Welcome" class="welcome-illustration">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Section -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="stat-value" id="projectCount">12</div>
+                        <div class="stat-label">Active Projects</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4CAF50, #8BC34A);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-value" id="taskCount">48</div>
+                        <div class="stat-label">Completed Tasks</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #2196F3, #03A9F4);">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="stat-value" id="notificationCount">3</div>
+                        <div class="stat-label">New Notifications</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="stat-card h-100">
+                        <h4 class="fw-bold mb-4">Quick Actions</h4>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-center p-3 rounded-3 bg-light">
+                                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle mb-2">
+                                        <i class="fas fa-plus text-primary"></i>
+                                    </div>
+                                    <span class="text-dark fw-medium">New Project</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-center p-3 rounded-3 bg-light">
+                                    <div class="bg-success bg-opacity-10 p-3 rounded-circle mb-2">
+                                        <i class="fas fa-upload text-success"></i>
+                                    </div>
+                                    <span class="text-dark fw-medium">Upload Files</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-center p-3 rounded-3 bg-light">
+                                    <div class="bg-warning bg-opacity-10 p-3 rounded-circle mb-2">
+                                        <i class="fas fa-users text-warning"></i>
+                                    </div>
+                                    <span class="text-dark fw-medium">Invite Team</span>
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="#" class="d-flex flex-column align-items-center text-decoration-none text-center p-3 rounded-3 bg-light">
+                                    <div class="bg-info bg-opacity-10 p-3 rounded-circle mb-2">
+                                        <i class="fas fa-cog text-info"></i>
+                                    </div>
+                                    <span class="text-dark fw-medium">Settings</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="stat-card h-100">
+                        <h4 class="fw-bold mb-4">Recent Activity</h4>
+                        <ul class="feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Your account was successfully verified</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-bell"></i>
+                                <span>New feature: Dark mode is now available</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-envelope"></i>
+                                <span>You have 3 unread messages</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Meeting with team at 2:00 PM</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+                                        <div class="me-4 text-center">
+                                            <div class="h2 mb-0">0</div>
+                                            <div class="small">Projects</div>
+                                        </div>
+                                        <div class="me-4 text-center">
+                                            <div class="h2 mb-0">0</div>
+                                            <div class="small">Tasks</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="h2 mb-0">0</div>
+                                            <div class="small">Messages</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="welcome-content">
+                                    <h2 class="mb-4">Your Dashboard</h2>
+                                    
+                                    <div class="alert alert-success" role="alert">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Your account was created on <span th:text="${#temporals.format(user.createdAt, 'MMMM dd, yyyy')}"></span>
+                                    </div>
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Account Information</h5>
+                                            <hr>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-3 fw-bold">Username:</div>
+                                                <div class="col-sm-9" th:text="${user.username}"></div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="col-sm-3 fw-bold">Email:</div>
+                                                <div class="col-sm-9" th:text="${user.email}"></div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3 fw-bold">Last Login:</div>
+                                                <div class="col-sm-9" th:text="${#temporals.format(user.lastLogin, 'MMMM dd, yyyy HH:mm')}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                                        <button class="btn btn-primary me-md-2" type="button">
+                                            <i class="fas fa-plus me-1"></i> New Project
+                                        </button>
+                                        <button class="btn btn-outline-secondary" type="button">
+                                            <i class="fas fa-cog me-1"></i> Settings
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+{{ ... }}
+                <p class="text-muted small mb-0">v1.0.0</p>
+            </div>
+        </footer>
+    </div>
+    
+    <style>
+        .welcome-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+        
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-action {
+            background: linear-gradient(135deg, #2196F3, #03A9F4);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .btn-action:hover {
+            background: linear-gradient(135deg, #03A9F4, #2196F3);
+        }
+        
+        .btn-outline-action {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        
+        .btn-outline-action:hover {
+            background: linear-gradient(135deg, #2196F3, #03A9F4);
+            color: white;
+        }
+    </style>
+</body>
+</html>
